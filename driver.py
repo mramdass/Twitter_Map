@@ -36,7 +36,7 @@ google_api_key = None
 
 AWSAccessKeyId = None
 AWSSecretKey = None
-endpoint = 'search-cloud-assignment-1-es-cv4bpq5zvcka753n4iw77wijoy.us-east-1.es.amazonaws.com'
+endpoint = '<ElasticSearch Endpoint>'
 es_client = None
 
 app = Flask(__name__)
