@@ -13,7 +13,7 @@
 '''
 
 try:
-    import gmplot, requests
+    import requests
     from gmplot import GoogleMapPlotter
     #from aws_requests_auth.aws_auth import AWSRequestsAuth
     from requests_aws4auth import AWS4Auth
@@ -36,7 +36,7 @@ google_api_key = None
 
 AWSAccessKeyId = None
 AWSSecretKey = None
-endpoint = '<ElasticSearch Endpoint>'
+endpoint = None
 es_client = None
 
 app = Flask(__name__)
@@ -157,7 +157,7 @@ def index(): return render_template('index.html')
 @app.route('/keyword', methods=['POST'])
 def keyword():
     word = request.form['words']
-    print 'Querying AWS ElasticSeach Service for', word
+    print 'Querying AWS ElasticSeach Service for:', word
     data = es_client.search(index="index_twitter",\
                             body={"query": {"match": {"text": word}}})
     with open('search_output.json', 'w') as w:
@@ -176,11 +176,16 @@ def keyword():
 # MAIN
 
 def main():
+    global endpoint
     parser = ArgumentParser()
     parser.add_argument('-c', '--credentials', \
                         help='Path to credentials JSON file', \
                         required=True)
+    parser.add_argument('-e', '--endpoint', \
+                        help='AWS ElasticSearch endpoint', \
+                        required=True)
     args = parser.parse_args()
+    endpoint = args.endpoint
     creds(args.credentials)
     twitter_auth()
     AWS_auth()
