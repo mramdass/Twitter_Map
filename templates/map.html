@@ -58,7 +58,7 @@
 
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
+          zoom: 4,
           center: {lat: 37.775, lng: -122.434},
           mapTypeId: 'satellite'
         });
@@ -105,13 +105,19 @@
       function getPoints() {
         return [
             // SPLIT POINT
-new google.maps.LatLng(37.782551, -122.445368),
-              new google.maps.LatLng(37.782745, -122.444586),
-              new google.maps.LatLng(37.782842, -122.443688),
-              new google.maps.LatLng(37.782919, -122.442815),
-              new google.maps.LatLng(37.782992, -122.442112)
+new google.maps.LatLng(45.52,-122.682),
+new google.maps.LatLng(42.7036083,-82.75088233),
+new google.maps.LatLng(38.89410582,-77.02722788),
+new google.maps.LatLng(45.5724969,-73.5421509),
+new google.maps.LatLng(38.89684467,-77.03660488),
+new google.maps.LatLng(40.76246983,-73.97391563),
+new google.maps.LatLng(8.9753041,-79.50698612),
+new google.maps.LatLng(9.09328264,7.40478516),
+new google.maps.LatLng(39.74601199,-104.99459343),
+new google.maps.LatLng(-20.4536554,-54.6463026),
+
         ];
       }
     </script>
-  </body>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN29fc57vHYTkguLGVzXr2mmpxBRvh6Vk&libraries=visualization&callback=initMap"></script></body>
 </html>
