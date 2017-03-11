@@ -13,7 +13,7 @@
 '''
 
 try:
-    import requests
+    import requests, os
     from gmplot import GoogleMapPlotter
     #from aws_requests_auth.aws_auth import AWSRequestsAuth
     from requests_aws4auth import AWS4Auth
@@ -41,6 +41,9 @@ es_client = None
 
 app = Flask(__name__)
 
+# Define a few popular words to Rate Limit Twitter API requests
+WORDS = ['Trump', 'the', 'i', 'to', 'a', 'and', 'is', 'in', 'it', 'you']
+
 def creds(name):
     global consumer_access, consumer_secret, token_access, token_secret, google_api_key,\
     AWSAccessKeyId, AWSSecretKey
@@ -56,6 +59,7 @@ def creds(name):
         AWSSecretKey = keys["AWSSecretKey"]
         r.close()
 
+# Manually entering API Key for testing purposes
 def insert_script(string):
     script = '<script async defer src="https://maps.googleapis.com/maps/api/js?key='\
             + google_api_key + '&libraries=visualization&callback=initMap"></script>'
@@ -63,17 +67,34 @@ def insert_script(string):
     strings = string.split('</body>')
     return strings[0] + script + '\n</body>' + strings[1]
 
-def insert_coordinates(string):
+# Manually entering Coordinates for testing purposes
+def insert_coordinates(string, map_page):
+    for root, dirs, files in os.walk("templates"):
+        for f in files:
+            if f == map_page: return
+        if len(files) > 15:
+            for f in files:
+                if f not in ['index.html', 'map.html']:
+                    os.remove(os.path.join(root, f))
+
     new_html = ''
     with open('templates/map.html', 'r') as r:
         for line in r:
             if 'new google.maps.LatLng(' not in line:
                 new_html += line
-    with open('templates/map.html', 'w') as w:
+    with open('templates/' + map_page, 'w') as w:
         strings = new_html.split('// SPLIT POINT')
         new_html = strings[0] + '// SPLIT POINT\n' + string + strings[1]
         new_html = insert_script(new_html)
         w.write(new_html)
+
+# Manually entering Coordinates for testing purposes
+def format_coordinates(hits):
+    string = ''
+    for hit in hits["hits"]["hits"]:
+        string += 'new google.maps.LatLng(' + str(hit['_source']['coordinates']['coordinates'][1])\
+                  + ',' + str(hit['_source']['coordinates']['coordinates'][0]) + '),\n'
+    return string[:-1]
 
 # AWS FUNCTIONS
 
@@ -146,7 +167,7 @@ def run_stream_listener():
     sl = StreamListener()
     stream = Stream(auth=twitter_api.auth, listener=sl)
     print 'Running Twitter Stream Listener'
-    stream.filter(track=['Trump'], async=True)
+    stream.filter(track=WORDS, async=True)
     print 'Twitter Stream Listener active async'
 
 # RUNNING APPLICATION LOGIC
@@ -163,15 +184,9 @@ def keyword():
     with open('search_output.json', 'w') as w:
         w.write(dumps(data, indent=4))
 
-    string = 'new google.maps.LatLng(37.782551, -122.445368),\n\
-              new google.maps.LatLng(37.782745, -122.444586),\n\
-              new google.maps.LatLng(37.782842, -122.443688),\n\
-              new google.maps.LatLng(37.782919, -122.442815),\n\
-              new google.maps.LatLng(37.782992, -122.442112)'
+    insert_coordinates(format_coordinates(data), 'map_' + word + '.html')
 
-    insert_coordinates(string)
-
-    return render_template('map.html')
+    return render_template('map_' + word + '.html')
 
 # MAIN
 
