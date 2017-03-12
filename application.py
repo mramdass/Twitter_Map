@@ -42,7 +42,7 @@ google_api_key = None
 AWSAccessKeyId = None
 AWSSecretKey = None
 
-endpoint = '<AWS ELASTICSEARCH SERVICE ENDPOINT HERE>'
+endpoint = '*******************************************************.us-east-1.es.amazonaws.com'
 es_client = None
 
 application = Flask(__name__)
@@ -161,16 +161,11 @@ def index(): return render_template('index.html')
 @application.route('/keyword', methods=['POST'])
 def keyword():
     global es_client
-
     try:
         word = request.form['words']
         data = es_client.search(index="index_twitter",\
                                 body={"query": {"match": {"text": word}}})
-        with open('search_output.json', 'w') as w:
-            w.write(dumps(data, indent=4))
-
         insert_coordinates(format_coordinates(data), 'map_' + word + '.html')
-
         return render_template('map_' + word + '.html')
     except: return render_template('map.html')
 
@@ -180,6 +175,16 @@ if __name__ == "__main__":
     creds('creds.json')
 
     twitter_auth()
+    
+    #es_client = Elasticsearch(
+    #    ["https://********************************.us-east-1.aws.found.io"],
+    #    #port=9243,
+    #    443,
+    #    http_auth=elastic_user + ":" + elastic_password,
+    #    serializer=JSONSerializerPython2()#,
+    #    #ca_certs=certifi.where()
+    #)
+    
 
     auth = AWSRequestsAuth(aws_access_key=AWSAccessKeyId,
                            aws_secret_access_key=AWSSecretKey,
@@ -211,18 +216,6 @@ if __name__ == "__main__":
     es_client.indices.create(index="index_twitter", \
                              ignore=400, \
                              body=mapping)
-    '''
-    es_client = Elasticsearch(
-        ["https://f91ae7b90eebdd0ca4b7be60674fa68f.us-east-1.aws.found.io"],
-        #port=9243,
-        443,
-        http_auth=elastic_user + ":" + elastic_password,
-        serializer=JSONSerializerPython2()#,
-        #ca_certs=certifi.where()
-    )
-    es_client.indices.create(index="index_twitter", \
-                             ignore=400, \
-                             body=mapping)
-    '''
+    
     run_stream_listener()
     application.run(debug=True)
