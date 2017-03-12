@@ -7,5 +7,7 @@
   "twitter_access_token": "",
   "twitter_secret_token": "",
   "AWSAccessKeyId": "",
-  "AWSSecretKey": ""
+  "AWSSecretKey": "",
+  "elastic_cloud_user": "",
+  "elastic_cloud_password": ""
 }
