@@ -52,7 +52,7 @@ WORDS = ['Trump', 'the', 'i', 'to', 'a', 'and', 'is', 'in', 'it', 'you']
 
 def creds(name):
     global consumer_access, consumer_secret, token_access, token_secret, google_api_key,\
-    AWSAccessKeyId, AWSSecretKey
+    AWSAccessKeyId, AWSSecretKey, elastic_user, elastic_password
 
     with open('creds.json', 'r') as r:
         keys = load(r)
