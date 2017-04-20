@@ -13,7 +13,7 @@
   "elastic_cloud_endpoint": "",
   "aws_sns_arn": "",
   "aws_es_endpoint": "",
-  "aws_es_port": "",
+  "aws_es_port": 443,
   "natural_language_understanding": {
     "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
     "username": "",
