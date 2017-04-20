@@ -5,6 +5,7 @@ Web Application that allows users to search keywords from an AWS Elasticsearch S
 Twitter Developer Account  
 Google API Key  
 Amazon Web Services Account - With SQS, SNS, Elasticsearch and Beanstalk services running  
+IBM Natural Language Understanding Account and API Key
 Elastic Cloud Account (Optional)  
 Python 2.7.11  
 ```
