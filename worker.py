@@ -21,8 +21,8 @@ def creds(name='creds.json'):
     try:
         with open(name, 'r') as r:
             keys = json.load(r)
-            nlu_creds	= keys["natural_language_understanding"]
-			sns_arn		= keys["aws_sns_arn"]
+            nlu_creds   = keys["natural_language_understanding"]
+            sns_arn     = keys["aws_sns_arn"]
             r.close()
     except Exception as e:
         print e

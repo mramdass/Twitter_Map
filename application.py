@@ -32,7 +32,7 @@ aws_es_endpoint = None
 aws_es_port = None
 
 def creds(name='creds.json'):
-    global google_api_key, AWSAccessKeyId, AWSSecretKey, aws_es_endpoint, aws_es_port\
+    global google_api_key, AWSAccessKeyId, AWSSecretKey, aws_es_endpoint, aws_es_port,\
         elastic_cloud_endpoint, elastic_cloud_username, elastic_cloud_password
     try:
         with open(name, 'r') as r:
@@ -43,8 +43,8 @@ def creds(name='creds.json'):
             elastic_cloud_endpoint  = keys["elastic_cloud_endpoint"]
             elastic_cloud_username  = keys["elastic_cloud_username"]
             elastic_cloud_password  = keys["elastic_cloud_password"]
-			aws_es_endpoint			= keys["aws_es_endpoint"]
-			aws_es_port				= keys["aws_es_port"]
+            aws_es_endpoint         = keys["aws_es_endpoint"]
+            aws_es_port             = keys["aws_es_port"]
             r.close()
     except Exception as e:
         print e
