@@ -11,8 +11,9 @@
   "elastic_cloud_username": "",
   "elastic_cloud_password": "",
   "elastic_cloud_endpoint": "",
-  "AWS_es_enpoint": "",
-  "AWS_SNS_ARN": "",
+  "aws_sns_srn": "",
+  "aws_es_endpoint": "",
+  "aws_es_port": "",
   "natural_language_understanding": {
     "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
     "username": "",

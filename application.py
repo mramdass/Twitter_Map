@@ -27,8 +27,12 @@ elastic_cloud_endpoint = None
 elastic_cloud_username = None
 elastic_cloud_password = None
 
+# AWS Elasticsearch Credentials
+aws_es_endpoint = None
+aws_es_port = None
+
 def creds(name='creds.json'):
-    global google_api_key, AWSAccessKeyId, AWSSecretKey,\
+    global google_api_key, AWSAccessKeyId, AWSSecretKey, aws_es_endpoint, aws_es_port\
         elastic_cloud_endpoint, elastic_cloud_username, elastic_cloud_password
     try:
         with open(name, 'r') as r:
@@ -39,6 +43,8 @@ def creds(name='creds.json'):
             elastic_cloud_endpoint  = keys["elastic_cloud_endpoint"]
             elastic_cloud_username  = keys["elastic_cloud_username"]
             elastic_cloud_password  = keys["elastic_cloud_password"]
+			aws_es_endpoint			= keys["aws_es_endpoint"]
+			aws_es_port				= keys["aws_es_port"]
             r.close()
     except Exception as e:
         print e
@@ -54,12 +60,25 @@ class JSONSerializerPython2(serializer.JSONSerializer):
         try: return dumps(data, default=self.default, ensure_ascii=True)
         except (ValueError, TypeError) as e: raise exceptions.SerializationError(data, e)
 
+'''
 es = Elasticsearch(
     [elastic_cloud_endpoint],
     port=9243,
     http_auth=elastic_cloud_username + ":" + elastic_cloud_password,
     serializer=JSONSerializerPython2(),
     ca_certs=certifi.where()
+)
+'''
+
+auth = AWS4Auth(AWSAccessKeyId, AWSSecretKey, 'us-east-1', 'es')
+
+es = Elasticsearch(
+    hosts=[{'host': aws_es_endpoint, 'port': aws_es_port}],
+    use_ssl=True,
+    http_auth=auth,
+    verify_certs=True,
+    connection_class=RequestsHttpConnection,
+    serializer=JSONSerializerPython2()
 )
 
 mapping = {
