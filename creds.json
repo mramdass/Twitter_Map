@@ -8,6 +8,14 @@
   "twitter_secret_token": "",
   "AWSAccessKeyId": "",
   "AWSSecretKey": "",
-  "elastic_cloud_user": "",
-  "elastic_cloud_password": ""
+  "elastic_cloud_username": "",
+  "elastic_cloud_password": "",
+  "elastic_cloud_endpoint": "",
+  "AWS_es_enpoint": "",
+  "AWS_SNS_ARN": "",
+  "natural_language_understanding": {
+    "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+    "username": "",
+    "password": ""
+  }
 }

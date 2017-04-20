@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Heatmaps</title>
+    <title>Tweet Sentiment Analysis</title>
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -37,10 +37,165 @@
         top: 10px;
         z-index: 5;
       }
+	  
+	  
+	  
+	  
+	  @import url(http://fonts.googleapis.com/css?family=Cabin:400);
+
+		.webdesigntuts-workshop {
+			background: #151515;
+			height: 100%;
+			position: absolute;
+			text-align: center;
+			width: 100%;
+		}
+
+		.webdesigntuts-workshop:before,
+		.webdesigntuts-workshop:after {
+			content: '';
+			display: block;
+			height: 1px;
+			left: 50%;
+			margin: 0 0 0 -400px;
+			position: absolute;
+			width: 800px;
+		}
+
+		.webdesigntuts-workshop:before {
+			background: #444;
+			background: linear-gradient(left, #151515, #444, #151515);
+			top: 192px;
+		}
+
+		.webdesigntuts-workshop:after {
+			background: #000;
+			background: linear-gradient(left, #151515, #000, #151515);
+			top: 191px;
+		}
+
+		.webdesigntuts-workshop form {
+			background: #111;
+			background: linear-gradient(#1b1b1b, #111);
+			border: 1px solid #000;
+			border-radius: 5px;
+			box-shadow: inset 0 0 0 1px #272727;
+			display: inline-block;
+			font-size: 0px;
+			margin: 150px auto 0;
+			padding: 20px;
+			position: relative;
+			z-index: 1;
+		}
+
+		.webdesigntuts-workshop input {
+			background: #222;
+			background: linear-gradient(#333, #222);
+			border: 1px solid #444;
+			border-radius: 5px 0 0 5px;
+			box-shadow: 0 2px 0 #000;
+			color: #888;
+			display: block;
+			float: left;
+			font-family: 'Cabin', helvetica, arial, sans-serif;
+			font-size: 13px;
+			font-weight: 400;
+			height: 40px;
+			margin: 0;
+			padding: 0 10px;
+			text-shadow: 0 -1px 0 #000;
+			width: 200px;
+		}
+
+		.ie .webdesigntuts-workshop input {
+			line-height: 40px;
+		}
+
+		.webdesigntuts-workshop input::-webkit-input-placeholder {
+		   color: #888;
+		}
+
+		.webdesigntuts-workshop input:-moz-placeholder {
+		   color: #888;
+		}
+
+		.webdesigntuts-workshop input:focus {
+			animation: glow 800ms ease-out infinite alternate;
+			background: #222922;
+			background: linear-gradient(#333933, #222922);
+			border-color: #393;
+			box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+			color: #efe;
+			outline: none;
+		}
+
+		.webdesigntuts-workshop input:focus::-webkit-input-placeholder {
+			color: #efe;
+		}
+
+		.webdesigntuts-workshop input:focus:-moz-placeholder {
+			color: #efe;
+		}
+
+		.webdesigntuts-workshop button {
+			background: #222;
+			background: linear-gradient(#333, #222);
+			box-sizing: content-box;
+			border: 1px solid #444;
+			border-left-color: #000;
+			border-radius: 0 5px 5px 0;
+			box-shadow: 0 2px 0 #000;
+			color: #fff;
+			display: block;
+			float: left;
+			font-family: 'Cabin', helvetica, arial, sans-serif;
+			font-size: 13px;
+			font-weight: 400;
+			height: 40px;
+			line-height: 40px;
+			margin: 0;
+			padding: 0;
+			position: relative;
+			text-shadow: 0 -1px 0 #000;
+			width: 80px;
+		}
+
+		.webdesigntuts-workshop button:hover,
+		.webdesigntuts-workshop button:focus {
+			background: #292929;
+			background: linear-gradient(#393939, #292929);
+			color: #5f5;
+			outline: none;
+		}
+
+		.webdesigntuts-workshop button:active {
+			background: #292929;
+			background: linear-gradient(#393939, #292929);
+			box-shadow: 0 1px 0 #000, inset 1px 0 1px #222;
+			top: 1px;
+		}
+
+		@keyframes glow {
+			0% {
+				border-color: #393;
+				box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+			}
+			100% {
+				border-color: #6f6;
+				box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+			}
+		}
     </style>
   </head>
 
   <body>
+	<section class="webdesigntuts-workshop">
+		<form action="{{ url_for('keyword') }}" method="POST">
+			<input type="search" name="words" placeholder="Filter">
+			<button>Search</button>
+		</form>
+	</section>
+  
     <div id="floating-panel">
       <button onclick="toggleHeatmap()">Toggle Heatmap</button>
       <button onclick="changeGradient()">Change gradient</button>
@@ -57,16 +212,72 @@
       var map, heatmap;
 
       function initMap() {
+          var field_ = {{ field|tojson }};
+
         map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
+          zoom: 2,
           center: {lat: 37.775, lng: -122.434},
           mapTypeId: 'satellite'
         });
 
+        points = [];
+        for (var key in field_) {
+          if (field_.hasOwnProperty(key)) {
+            points.push(new google.maps.LatLng(field_[key]["lat"], field_[key]["lon"]));
+          }
+        }
         heatmap = new google.maps.visualization.HeatmapLayer({
-          data: getPoints(),
+          //data: getPoints(),
+          data: points,
           map: map
         });
+
+        var marker_green = {
+          //url: "http://www.iconsdb.com/icons/preview/green/map-marker-2-xxl.png",
+          url: "http://icon-park.com/imagefiles/location_map_pin_green8.png",
+          //url: "",
+          scaledSize: new google.maps.Size(20, 20),
+          origin: new google.maps.Point(0,0),
+          anchor: new google.maps.Point(0, 0)
+        };
+        var marker_red = {
+          //url: "http://www.iconsdb.com/icons/preview/red/map-marker-2-xxl.png",
+          url: "http://icon-park.com/imagefiles/location_map_pin_red8.png",
+          //url: "",
+          scaledSize: new google.maps.Size(20, 20),
+          origin: new google.maps.Point(0,0),
+          anchor: new google.maps.Point(0, 0)
+        };
+        var marker_blue = {
+          //url: "http://www.iconsdb.com/icons/preview/blue/map-marker-2-xxl.png",
+          url: "http://icon-park.com/imagefiles/location_map_pin_light_blue8.png",
+          //url: "",
+          scaledSize: new google.maps.Size(20, 20),
+          origin: new google.maps.Point(0,0),
+          anchor: new google.maps.Point(0, 0)
+        };
+        var myLatLng = {lat: -25.363, lng: 131.044};
+        for (var key in field_) {
+          if (field_.hasOwnProperty(key)) {
+              var marker_color;
+              if (field_[key]["sentiment"] == "positive") {
+                  marker_color = marker_green;
+              } else if (field_[key]["sentiment"] == "negative") {
+                  marker_color = marker_red;
+              } else {
+                  marker_color = marker_blue;
+              }
+              //var myLatLng = {lat: field_[key]["lat"], lng: field_[key]["lon"]};
+              var myLatLng = field_[key]["location"]
+              var marker = new google.maps.Marker({
+                  position: myLatLng,
+                  map: map,
+                  title: field_[key]["text"] + " - " + field_[key]["time"],
+                  icon: marker_color,
+                  animation: google.maps.Animation.DROP
+                });
+          }
+        }
       }
 
       function toggleHeatmap() {
@@ -101,21 +312,19 @@
         heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
       }
 
-      // Heatmap data: 500 Points
-      function getPoints() {
+      function getPoints() { // NOT USED
         return [
             // SPLIT POINT
-new google.maps.LatLng(45.52,-122.682),
-new google.maps.LatLng(42.7036083,-82.75088233),
-new google.maps.LatLng(38.89410582,-77.02722788),
-new google.maps.LatLng(45.5724969,-73.5421509),
-new google.maps.LatLng(38.89684467,-77.03660488),
-new google.maps.LatLng(40.76246983,-73.97391563),
-new google.maps.LatLng(8.9753041,-79.50698612),
-new google.maps.LatLng(9.09328264,7.40478516),
-new google.maps.LatLng(39.74601199,-104.99459343),
-new google.maps.LatLng(-20.4536554,-54.6463026),
-
+            new google.maps.LatLng(45.52,-122.682),
+            new google.maps.LatLng(42.7036083,-82.75088233),
+            new google.maps.LatLng(38.89410582,-77.02722788),
+            new google.maps.LatLng(45.5724969,-73.5421509),
+            new google.maps.LatLng(38.89684467,-77.03660488),
+            new google.maps.LatLng(40.76246983,-73.97391563),
+            new google.maps.LatLng(8.9753041,-79.50698612),
+            new google.maps.LatLng(9.09328264,7.40478516),
+            new google.maps.LatLng(39.74601199,-104.99459343),
+            new google.maps.LatLng(-20.4536554,-54.6463026),
         ];
       }
     </script>
