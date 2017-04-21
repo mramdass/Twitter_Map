@@ -22,3 +22,15 @@ python application.py
 python worker.py
 python streamer.py
 ```
+## Key
+### Positive
+Positive sentiments are indicated with green map pins. Hovering over a green pin will display its tweet content which includes text and time of the tweet.  
+![alt tag](https://github.com/mramdass/Twitter_Map/blob/master/Screenshots/Positive_Green.png)  
+### Negative
+Negative sentiments are indicated with red map pins. Hovering over a red pin will display its tweet content which includes text and time of the tweet.  
+![alt tag](https://github.com/mramdass/Twitter_Map/blob/master/Screenshots/Negative_Red.png)  
+### Neutral
+Neutral sentiments are indicated with blue map pins. Hovering over a blue pin will display its tweet content which includes text and time of the tweet.  
+![alt tag](https://github.com/mramdass/Twitter_Map/blob/master/Screenshots/Neutral_Blue.png)  
+## Closer View
+![alt tag](https://github.com/mramdass/Twitter_Map/blob/master/Screenshots/Zoom_In.png) 
